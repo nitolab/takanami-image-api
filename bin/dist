@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -xe
+
+PGM=`basename $0`
+ROOT_DIR=$(cd $(dirname $0);cd ..; pwd)
+
+rm -rf ${ROOT_DIR}/dist || :
+rm ${ROOT_DIR}/dist.zip || :
+
+mkdir ${ROOT_DIR}/dist
+docker run -it --rm -v ${ROOT_DIR}:/opt  amazon/aws-sam-cli-build-image-python3.8:latest pip install -r /opt/requirements.txt -t /opt/dist/
+cp ${ROOT_DIR}/resize.py ${ROOT_DIR}/dist/
+
+cd dist
+zip -r ${ROOT_DIR}/dist.zip ./
+
+exit 0
